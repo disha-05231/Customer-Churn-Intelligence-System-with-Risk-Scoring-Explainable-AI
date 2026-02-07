@@ -7,8 +7,11 @@
 
 The system was designed to:
 -Predict customer churn based on historical behavior
+
 -Segment customers into High, Medium, and Low risk groups
+
 -Identify key churn drivers using explainable AI
+
 -Generate deployable CSV outputs for retention teams
 -Validate model stability and address practical ML challenges such as data leakage and class imbalance
 
