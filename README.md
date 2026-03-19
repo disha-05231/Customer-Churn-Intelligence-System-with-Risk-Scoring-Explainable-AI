@@ -1,173 +1,238 @@
-1.Project Overview
+# Customer Churn Intelligence System with Risk Scoring & Explainable AI
 
--This project implements an end-to-end Machine Learning system to predict customer churn using real-world telecom data. The goal was to build a complete churn intelligence pipeline that is explainable, leakage-free, business-actionable, and reusable across similar datasets.
--The dataset contains approximately 100,000 telecom customers with over 200 behavioral features across multiple months, including usage, recharge, revenue, and engagement metrics.
+## 1. Project Overview
 
-2.Objective
+This project implements a complete end-to-end Machine Learning system to predict customer churn using real-world telecom data.
 
-The system was designed to:
+The primary goal was to design a churn intelligence pipeline that is:
+- Explainable
+- Leakage-free
+- Business-actionable
+- Reusable across similar datasets
 
--Predict customer churn based on historical behavior
+The dataset consists of approximately **100,000 telecom customers** with **200+ behavioral features** across multiple months, including:
+- Usage patterns
+- Recharge behavior
+- Revenue metrics
+- Customer engagement indicators
 
--Segment customers into High, Medium, and Low risk groups
+---
 
--Identify key churn drivers using explainable AI
+## 2. Objective
 
--Generate deployable CSV outputs for retention teams
+The system was designed with the following objectives:
 
--Validate model stability and address practical ML challenges such as data leakage and class imbalance
+- Predict customer churn based on historical behavioral data  
+- Segment customers into **High, Medium, and Low risk categories**  
+- Identify key churn drivers using explainable AI techniques  
+- Generate **deployment-ready outputs** for business/retention teams  
+- Ensure model robustness by addressing real-world ML challenges  
 
-3.Churn Definition
+---
 
--Churn was defined using domain logic:
+## 3. Churn Definition
 
--Customers with zero revenue (arpu_9 == 0) in Month 9 were labeled as churned.
+Churn was defined using domain-specific logic:
 
--This transformed raw behavioral data into a supervised learning problem.
+- Customers with **zero revenue in Month 9 (arpu_9 == 0)** were labeled as churned  
 
-4.Exploratory Data Analysis
+This transformation converted raw behavioral data into a **supervised learning problem**.
 
-Initial analysis revealed:
+---
 
--Significant class imbalance (~9% churn)
+## 4. Exploratory Data Analysis (EDA)
 
--Revenue and usage decline as primary churn indicators
+Initial analysis revealed several important patterns:
 
--Strong influence of tenure and recharge behavior
+- Significant **class imbalance (~9% churn rate)**  
+- Clear **decline in revenue and usage before churn**  
+- Strong influence of **tenure and recharge behavior**  
+- Feature relationships analyzed using a **correlation matrix**, focusing on high-variance features  
 
--A correlation matrix (top high-variance features) was generated to understand feature relationships and detect redundancy.
+EDA helped identify meaningful signals and reduce redundant features.
 
-5.Feature Engineering and Preprocessing
+---
 
--Key preprocessing steps included:
+## 5. Feature Engineering and Preprocessing
 
--Removal of Month-9 features to eliminate data leakage
+Key preprocessing steps included:
 
--Selection of numeric features only
+- Removal of **Month-9 features** to eliminate **data leakage**  
+- Selection of **numeric features only** for modeling  
+- Handling missing values using **median imputation**  
+- Use of **stratified train-test split** to preserve churn distribution  
 
--Median imputation for missing values
+### Critical Insight:
+Initial model performance was unrealistically high, indicating **data leakage**.  
+Feature importance analysis revealed that **future-dependent variables (Month-9)** were dominating predictions.
 
--Stratified train-test split to preserve churn distribution
+These features were removed to ensure:
+- Realistic evaluation
+- Generalizable model performance
 
--A critical learning point was identifying data leakage through unrealistically high initial performance. Feature importance analysis revealed future Month-9 variables dominating predictions. These were removed to restore realistic evaluation.
+---
 
-6.Model Development
+## 6. Model Development
 
--Two models were implemented:
+Two models were implemented:
 
--Logistic Regression (baseline)
+### 1. Logistic Regression
+- Used as a baseline model  
+- Provided interpretability  
 
--Random Forest (primary model)
+### 2. Random Forest (Final Model)
+- Captures non-linear relationships  
+- Better performance on complex patterns  
+- Selected as the final production model  
 
--Random Forest was selected as the final model due to its ability to capture non-linear behavior patterns and its superior ROC-AUC performance.
+---
 
-7.Validation Strategy
+## 7. Validation Strategy
 
--To ensure reliable performance:
+To ensure reliable and robust performance:
 
--Holdout test set (80/20 split) was used
+- Data split into **80% training / 20% testing**  
+- Applied **Stratified K-Fold Cross-Validation** on training data  
+- Used **ROC-AUC as the primary evaluation metric**  
 
--Stratified K-Fold cross-validation was applied on training data to validate model stability
+### Final Random Forest Performance:
+- **ROC-AUC ≈ 0.92**  
+- **Accuracy ≈ 90%**  
+- **Churn Recall ≈ 73%**  
 
--ROC-AUC was chosen as the primary evaluation metric
+These results indicate:
+- Strong generalization  
+- Controlled overfitting  
+- Reliable predictive performance  
 
-7.Final Random Forest performance:
+---
 
--ROC-AUC ≈ 0.92
+## 8. Engineering Challenges Addressed
 
--Accuracy ≈ 90%
+This project focused heavily on solving real-world ML issues:
 
--Churn recall ≈ 73%
+### Data Leakage
+- Detected via unrealistic performance  
+- Resolved by removing future-dependent features  
 
--These results confirmed good generalization without overfitting.
+### Overfitting
+- Controlled using cross-validation and proper evaluation  
 
-8.Engineering Challenges Addressed
+### Missing Values
+- Handled using median imputation  
 
-Several real-world ML issues were identified and resolved:
+### Class Imbalance
+- Managed using **balanced class weights**  
 
--Data Leakage: Detected via unrealistically high performance and corrected by removing Month-9 features
+### Prediction Scope
+- Extended from test-only predictions to **full dataset scoring**  
 
--Overfitting Concerns: Mitigated using cross-validation and test-set evaluation
+### Business Requirements
+- Generated **actionable outputs** for real-world usage  
 
--Missing Values: Handled using median imputation
+---
 
--Class Imbalance: Managed using balanced class weights
+## 9. Risk Scoring System
 
--Test vs Full Dataset Predictions: Extended from test-only predictions to scoring the full customer base
+Predicted churn probabilities were converted into business-friendly categories:
 
--Business Output Requirements: Added CSV exports for operational use
+- **High Risk ≥ 0.70**  
+- **Medium Risk ≥ 0.40**  
+- **Low Risk < 0.40**  
 
+This allows business teams to:
+- Prioritize high-risk customers  
+- Optimize retention strategies  
+- Allocate resources efficiently  
 
-9.Risk Scoring System
+---
 
-Predicted churn probabilities were converted into business-friendly risk tiers:
+## 10. Explainable AI
 
--High Risk ≥ 0.70
+Explainability was ensured using:
 
--Medium Risk ≥ 0.40
+- **Random Forest feature importance**
 
--Low Risk < 0.40
+Key churn drivers identified:
+- Revenue decline  
+- Recharge amount  
+- Usage behavior  
 
--This enables prioritization of retention efforts.
+This ensures:
+- Transparency  
+- Trust in model predictions  
+- Better business decision-making  
 
-10.Explainable AI
+---
 
-Random Forest feature importance was used to identify dominant churn drivers such as revenue, recharge amounts, and usage metrics, ensuring transparency and interpretability.
-Deployment-Oriented Outputs
+## 11. Deployment-Oriented Outputs
 
-The system generates:
+The system generates multiple business-ready outputs:
 
--Full customer churn predictions (all_customers_churn_risk.csv)
+- `all_customers_churn_risk.csv`  
+  → Full dataset predictions with churn probabilities  
 
--Actionable High and Medium risk customer lists (high_medium_risk_customers.csv)
+- `high_medium_risk_customers.csv`  
+  → Filtered actionable list for retention teams  
 
--An automated insight summary is also produced, containing risk distribution and top churn drivers.
+- Automated **insight summary**, including:
+  - Risk distribution  
+  - Key churn drivers  
 
-11.Dynamic Pipeline Design
+---
 
--The pipeline was structured so that:
+## 12. Dynamic Pipeline Design
 
--Preprocessing applies only to feature matrices (original datasets remain unchanged)
+The pipeline was designed for reusability and scalability:
 
--New telecom datasets with similar schema can be scored using the same workflow
+- Preprocessing applied only to feature matrices  
+- Original dataset remains unchanged  
+- New telecom datasets with similar schema can be processed  
+- Models can be retrained for different domains  
 
--Models can be retrained for new domains
+### Design Principle:
+> The pipeline is reusable, the model is retrainable  
 
-12.Design principle:
+---
 
--The pipeline is reusable; the model is retrainable.
+## 13. Final System Capabilities
 
--Final System Capabilities
+The completed system includes:
 
--The completed system includes:
+- End-to-end ML pipeline  
+- Leakage-free modeling  
+- Exploratory data analysis with correlation matrix  
+- Logistic Regression baseline  
+- Random Forest final model  
+- Stratified K-Fold validation  
+- Explainable feature importance  
+- Full dataset scoring  
+- Risk segmentation  
+- Business-ready CSV outputs  
+- Automated insight generation  
 
--Leakage-free ML pipeline
+---
 
--Exploratory analysis with correlation matrix
+## 14. Tech Stack
 
--Logistic Regression baseline
+- **Programming Language:** Python  
+- **Libraries:** Pandas, NumPy, Scikit-learn  
+- **Tools:** VS Code, Anaconda  
 
--Random Forest model
+---
 
--Stratified K-Fold cross-validation
+## 15. Conclusion
 
--Explainable feature importance
+This project demonstrates a complete machine learning lifecycle:
 
--Full dataset scoring
+- From raw data preprocessing  
+- To model development and validation  
+- To deployment-ready outputs  
 
--Risk segmentation
+The focus was on:
+- Engineering rigor  
+- Real-world problem solving  
+- Model reliability  
+- Business usability  
 
--Business-ready CSV exports
-
--Automated insight summary generation
-
-13.Conclusion
-
--This project demonstrates a complete machine learning lifecycle, from raw data to deployment-ready churn intelligence. Emphasis was placed on engineering rigor, validation, explainability, and business usability, reflecting real-world ML development practices rather than academic modeling alone.
-
-OUTPUT:
-
-<img width="1536" height="759" alt="output2" src="https://github.com/user-attachments/assets/cf40a950-217d-4454-9ae3-5d5aa9a26726" />
-
-<img width="798" height="607" alt="Screenshot 2026-02-05 110005" src="https://github.com/user-attachments/assets/609b866c-6fb6-4aef-86ee-b728038ffd39" />
-
+This reflects practical ML system design rather than purely academic modeling.
